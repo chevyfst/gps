@@ -1,0 +1,37 @@
+<button onclick="startTracking()">Start Tracking</button>
+<p id="output"></p>
+
+<script>
+let watchId = null;
+
+function startTracking() {
+  if (!navigator.geolocation) {
+    alert("GPS not supported on this device/browser");
+    return;
+  }
+
+  watchId = navigator.geolocation.watchPosition(
+    (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const accuracy = position.coords.accuracy;
+      const speed = position.coords.speed; // meters/second, may be null
+
+      document.getElementById("output").innerHTML = `
+        Latitude: ${lat}<br>
+        Longitude: ${lon}<br>
+        Accuracy: ${accuracy} meters<br>
+        Speed: ${speed !== null ? (speed * 3.6).toFixed(2) + " km/h" : "Not available"}
+      `;
+    },
+    (error) => {
+      alert("Location error: " + error.message);
+    },
+    {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 10000
+    }
+  );
+}
+</script>
